@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Receive Clipboard Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #66d6a9;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      color: #fff;
+    }
+
+    input {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      border: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      background-color: #fff;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #ddd;
+    }
+
+    #data-display {
+      margin-top: 15px;
+      font-size: 1rem;
+      color: #004f40;
+      word-wrap: break-word;
+    }
+
+    .no-data {
+      color: #ff4d4d;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Receive Clipboard Data</h1>
+    <input type="text" id="receive-code" placeholder="Enter Code">
+    <button id="fetch-data-button">Fetch Data</button>
+    <p id="data-display"></p>
+  </div>
+
+  <script>
+    const apiUrl = "http://127.0.0.1:8000";
+
+    document.getElementById("fetch-data-button").addEventListener("click", async () => {
+      const code = document.getElementById("receive-code").value.trim();
+      const dataDisplay = document.getElementById("data-display");
+
+      if (code) {
+        try {
+          const response = await fetch(`${apiUrl}/get?code=${code}`);
+          const data = await response.json();
+
+          if (data && data.content) {
+            dataDisplay.textContent = data.content;
+            dataDisplay.classList.remove("no-data");
+          } else {
+            dataDisplay.textContent = "NO DATA IS AVAILABLE";
+            dataDisplay.classList.add("no-data");
+          }
+        } catch (error) {
+          dataDisplay.textContent = "An error occurred. Please try again.";
+          dataDisplay.classList.add("no-data");
+        }
+      } else {
+        alert("Please enter a code.");
+      }
+    });
+  </script>
+</body>
+</html>
